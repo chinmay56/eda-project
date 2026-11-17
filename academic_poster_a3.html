@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Multidimensional Academic Intelligence &amp; Performance Modeling (A4)</title>
+  <style>
+    /* -------------------------------------------------------------------------
+       ISO A4 PORTRAIT SPECIFICATIONS: 210mm x 297mm (Ratio 1 : 1.4142)
+       Large-Formatted, Space-Filling Academic Poster Architecture
+       Distinct Topic Framing & Clean Warm Terracotta / Orange Aesthetic
+       ------------------------------------------------------------------------- */
+    @page {
+      size: A4 portrait;
+      margin: 0;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      /* Warm Terracotta / Orange Clean Palette */
+      --primary: #C2410C;        /* Rich Burnt Orange */
+      --primary-dark: #9A3412;   /* Deep Rust / Terracotta */
+      --primary-vibrant: #EA580C; /* Vibrant Tangerine */
+      --primary-soft: #F97316;
+      --accent-warm: #FB923C;
+      --bg-cream: #FFF7ED;       /* Warm Cream Surface */
+      --bg-card: #FFFFFF;
+      --border-accent: #FED7AA;  /* Soft Warm Border */
+      --border-subtle: #CBD5E1;
+      
+      /* High-Contrast Typography Colors */
+      --text-dark: #0F172A;      /* Slate Charcoal */
+      --text-body: #1E293B;
+      --text-muted: #334155;
+      --text-soft: #64748B;
+      
+      /* Status Colors */
+      --green: #15803D;
+      --green-bg: #DCFCE7;
+      --green-border: #86EFAC;
+      --red: #B91C1C;
+      --red-bg: #FEE2E2;
+      --red-border: #FECACA;
+      --amber: #B45309;
+      --amber-bg: #FEF3C7;
+      --amber-border: #FCD34D;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background-color: #D3DCE6;
+      color: var(--text-body);
+      line-height: 1.35;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 16px 0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Print Control Bar */
+    .print-bar {
+      width: 960px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--text-dark);
+      color: #FFFFFF;
+      padding: 8px 16px;
+      border-radius: 6px;
+      margin-bottom: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .btn-print {
+      background: var(--primary-vibrant);
+      color: #FFFFFF;
+      border: none;
+      font-weight: 700;
+      font-size: 13px;
+      padding: 7px 18px;
+      border-radius: 5px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.15s;
+    }
+
+    .btn-print:hover {
+      background: var(--primary-dark);
+    }
+
+    /* A4 Poster Canvas: 960px x 1357px (Exact 1 : 1.4135 A4 Proportion) */
+    .poster-canvas {
+      width: 960px;
+      height: 1357px;
+      max-height: 1357px;
+      background: #FFFFFF;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 16px 20px;
+      box-shadow: 0 16px 45px rgba(15, 23, 42, 0.22);
+      position: relative;
+      overflow: hidden;
+    }
+
+    @media print {
+      body {
+        padding: 0;
+        background: transparent;
+      }
+      .print-bar {
+        display: none !important;
+      }
+      .poster-canvas {
+        width: 210mm;
+        height: 297mm;
+        max-height: 297mm;
+        padding: 5mm 6mm;
+        box-shadow: none;
+      }
+    }
+
+    /* ================= 1. DISTINCT HEADER ================= */
+    .header-section {
+      border-bottom: 2.5px solid var(--primary);
+      padding-bottom: 8px;
+    }
+
+    .institution-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--text-soft);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .capstone-badge {
+      background: var(--primary-dark);
+      color: #FFFFFF;
+      padding: 2px 9px;
+      border-radius: 4px;
+      font-size: 10.5px;
+      font-weight: 800;
+      letter-spacing: 0.4px;
+    }
+
+    .title-group {
+      text-align: left;
+      margin: 4px 0 8px 0;
+    }
+
+    .poster-title {
+      font-size: 24px;
+      font-weight: 900;
+      color: var(--primary-dark);
+      letter-spacing: -0.5px;
+      line-height: 1.16;
+    }
+
+    .poster-subtitle {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--primary);
+      margin-top: 3px;
+    }
+
+    /* Authors & Key Findings Banner */
+    .authors-summary-strip {
+      background: var(--bg-cream);
+      border: 1.5px solid var(--border-accent);
+      border-radius: 8px;
+      padding: 7px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .author-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .avatar-circle {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 11px;
+      flex-shrink: 0;
+    }
+
+    .author-meta {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.2;
+    }
+
+    .author-meta strong {
+      font-size: 12.5px;
+      color: var(--text-dark);
+    }
+
+    .author-meta span {
+      font-size: 11px;
+      color: var(--primary-dark);
+      font-family: monospace;
+      font-weight: 700;
+    }
+
+    .cohort-metrics {
+      display: flex;
+      gap: 8px;
+    }
+
+    .metric-badge {
+      background: #FFFFFF;
+      border: 1px solid var(--border-accent);
+      border-radius: 5px;
+      padding: 3px 9px;
+      text-align: center;
+    }
+
+    .metric-badge-num {
+      font-size: 13.5px;
+      font-weight: 900;
+      color: var(--primary-dark);
+      font-family: monospace;
+      line-height: 1.1;
+    }
+
+    .metric-badge-txt {
+      font-size: 8.5px;
+      font-weight: 700;
+      color: var(--text-soft);
+      text-transform: uppercase;
+    }
+
+    /* ================= 2. RESEARCH WORKFLOW STRIP ================= */
+    .workflow-strip {
+      background: #FFFFFF;
+      border: 1.5px solid var(--border-accent);
+      border-radius: 7px;
+      padding: 6px 10px;
+      margin: 8px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .workflow-lead {
+      font-size: 11px;
+      font-weight: 900;
+      color: var(--primary-dark);
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      width: 100px;
+      line-height: 1.15;
+      border-right: 2px solid var(--primary-vibrant);
+      padding-right: 8px;
+      flex-shrink: 0;
+    }
+
+    .wf-step {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      background: var(--bg-cream);
+      border: 1px solid var(--border-accent);
+      padding: 4px 9px;
+      border-radius: 6px;
+      flex: 1;
+    }
+
+    .wf-num {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10.5px;
+      font-weight: 900;
+      flex-shrink: 0;
+    }
+
+    .wf-info {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.18;
+    }
+
+    .wf-title {
+      font-size: 10.5px;
+      font-weight: 800;
+      color: var(--primary-dark);
+    }
+
+    .wf-desc {
+      font-size: 9px;
+      color: var(--text-muted);
+    }
+
+    .wf-arrow {
+      color: var(--primary-vibrant);
+      font-size: 14px;
+      font-weight: 900;
+    }
+
+    /* ================= 3. FOUR DISTINCT CORE MODULES ================= */
+    .modules-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      flex: 1;
+    }
+
+    .research-card {
+      background: #FFFFFF;
+      border: 1.5px solid var(--border-accent);
+      border-radius: 8px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+    }
+
+    .card-banner {
+      background: var(--bg-cream);
+      border-bottom: 1.5px solid var(--border-accent);
+      padding: 5px 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .card-banner-left {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .pill-unit {
+      background: var(--primary);
+      color: #FFFFFF;
+      font-size: 9.5px;
+      font-weight: 900;
+      padding: 2px 7px;
+      border-radius: 4px;
+      letter-spacing: 0.5px;
+    }
+
+    .card-heading {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--primary-dark);
+      letter-spacing: -0.2px;
+    }
+
+    .card-focus {
+      font-size: 9.5px;
+      color: var(--text-soft);
+      font-weight: 600;
+    }
+
+    .card-content {
+      padding: 8px 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      flex: 1;
+      gap: 6px;
+      font-size: 11px;
+      line-height: 1.34;
+      color: var(--text-body);
+    }
+
+    /* MODULE 1: INGESTION ARCHITECTURE */
+    .ingest-diagram-box {
+      background: #FFFDFB;
+      border: 1px solid var(--border-accent);
+      border-radius: 6px;
+      padding: 6px 8px;
+    }
+
+    .diagram-title {
+      font-size: 9.5px;
+      font-weight: 800;
+      color: var(--primary-dark);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      margin-bottom: 4px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .bullet-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      font-size: 10.5px;
+    }
+
+    .bullet-list li {
+      position: relative;
+      padding-left: 11px;
+      line-height: 1.28;
+    }
+
+    .bullet-list li::before {
+      content: "▪";
+      position: absolute;
+      left: 0;
+      color: var(--primary-vibrant);
+      font-size: 12px;
+      line-height: 1;
+    }
+
+    .bullet-list strong {
+      color: var(--text-dark);
+    }
+
+    /* MODULE 2: OLAP MULTIDIMENSIONAL ANALYTICS */
+    .olap-split {
+      display: grid;
+      grid-template-columns: 1.05fr 1fr;
+      gap: 7px;
+    }
+
+    .olap-box {
+      background: var(--bg-cream);
+      border: 1px solid var(--border-accent);
+      border-radius: 6px;
+      padding: 5px 8px;
+    }
+
+    .olap-box-head {
+      font-size: 10px;
+      font-weight: 800;
+      color: var(--primary-dark);
+      text-transform: uppercase;
+      margin-bottom: 3px;
+    }
+
+    .table-pivot {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 9.5px;
+      margin-top: 3px;
+    }
+
+    .table-pivot th {
+      background: #FFE8D6;
+      color: var(--primary-dark);
+      padding: 3px 5px;
+      border: 1px solid var(--border-accent);
+      font-weight: 800;
+      text-align: left;
+    }
+
+    .table-pivot td {
+      padding: 3px 5px;
+      border: 1px solid #E2E8F0;
+      font-family: monospace;
+      font-size: 9.5px;
+    }
+
+    .table-pivot tr:nth-child(even) {
+      background: #FFFDFB;
+    }
+
+    /* MODULE 3: HYPOTHESIS TESTING */
+    .tests-dual-card {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 7px;
+    }
+
+    .test-subcard {
+      border: 1px solid var(--border-accent);
+      border-radius: 6px;
+      background: #FFFDFB;
+      padding: 6px 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .test-subcard-head {
+      font-size: 10.5px;
+      font-weight: 800;
+      color: var(--primary-dark);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .formula-display {
+      font-family: monospace;
+      font-size: 11.5px;
+      font-weight: 800;
+      color: var(--text-dark);
+      background: var(--bg-cream);
+      padding: 3px 6px;
+      border-radius: 4px;
+      text-align: center;
+      border: 1px solid var(--border-accent);
+    }
+
+    .decision-badge-reject {
+      font-size: 9.5px;
+      font-weight: 800;
+      color: var(--red);
+      background: var(--red-bg);
+      border: 1px solid var(--red-border);
+      padding: 2px 6px;
+      border-radius: 4px;
+      text-align: center;
+    }
+
+    .decision-badge-accept {
+      font-size: 9.5px;
+      font-weight: 800;
+      color: var(--green);
+      background: var(--green-bg);
+      border: 1px solid var(--green-border);
+      padding: 2px 6px;
+      border-radius: 4px;
+      text-align: center;
+    }
+
+    /* MODULE 4: ECONOMETRIC REGRESSION & PREDICTIVE ML */
+    .regression-equation-strip {
+      background: var(--bg-cream);
+      border: 1px solid var(--border-accent);
+      border-radius: 5px;
+      padding: 5px 8px;
+      font-family: monospace;
+      font-size: 10px;
+      font-weight: 800;
+      color: var(--primary-dark);
+      text-align: center;
+    }
+
+    .ml-split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 7px;
+    }
+
+    .ml-panel {
+      border: 1px solid #E2E8F0;
+      border-radius: 6px;
+      padding: 5px 8px;
+      background: #FFFFFF;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    /* ================= 4. BENCHMARK & EFFICIENCY IMPACT ================= */
+    .benchmark-section {
+      background: #FFFFFF;
+      border: 1.5px solid var(--border-accent);
+      border-radius: 7px;
+      padding: 6px 12px;
+      margin-top: 8px;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1.15fr;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .bench-card {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      font-size: 10px;
+    }
+
+    .bench-card-title {
+      font-size: 10.5px;
+      font-weight: 900;
+      color: var(--primary-dark);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .callout-amber-box {
+      background: var(--amber-bg);
+      border: 1px solid var(--amber-border);
+      border-radius: 5px;
+      padding: 5px 8px;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--amber);
+      line-height: 1.3;
+      text-align: center;
+    }
+
+    /* POSTER FOOTER */
+    .poster-footer {
+      border-top: 2px solid var(--primary);
+      padding-top: 6px;
+      margin-top: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      color: var(--text-soft);
+      font-weight: 600;
+    }
+
+    .footer-highlight {
+      color: var(--primary-dark);
+      font-weight: 800;
+      font-size: 11.5px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Floating Print Button -->
+  <div class="print-bar">
+    <div>
+      <strong>Student Performance Academic Analytics Poster</strong> &bull; Sized for ISO A4 Sheet (210mm &times; 297mm)
+    </div>
+    <button class="btn-print" onclick="window.print()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+        <path d="M6 14h12v8H6z"/>
+      </svg>
+      Print / Save as PDF (A4)
+    </button>
+  </div>
+
+  <div class="poster-canvas">
+
+    <!-- 1. INSTITUTION & RESEARCH HEADER -->
+    <header class="header-section">
+      <div class="institution-top">
+        <div>Department of Computer Science &amp; Information Technology</div>
+        <div class="capstone-badge">Academic Project &bull; Capstone 2025 &ndash; 2026</div>
+      </div>
+
+      <div class="title-group">
+        <h1 class="poster-title">Multidimensional Academic Intelligence &amp; Performance Modeling</h1>
+        <p class="poster-subtitle">Investigating Socioeconomic, Behavioral, and Institutional Determinants of Student Examination Outcomes</p>
+      </div>
+
+      <!-- Authors & Cohort Indicators -->
+      <div class="authors-summary-strip">
+        <div class="author-pill">
+          <div class="avatar-circle">CG</div>
+          <div class="author-meta">
+            <strong>Chinmay Ghag</strong>
+            <span>PRN: 202401080073</span>
+          </div>
+        </div>
+
+        <div style="color: var(--border-accent); font-weight: 300; font-size: 16px;">|</div>
+
+        <div class="author-pill">
+          <div class="avatar-circle">KB</div>
+          <div class="author-meta">
+            <strong>Kunal Birari</strong>
+            <span>PRN: 202401080049</span>
+          </div>
+        </div>
+
+        <div style="color: var(--border-accent); font-weight: 300; font-size: 16px;">|</div>
+
+        <div class="cohort-metrics">
+          <div class="metric-badge">
+            <div class="metric-badge-num">6,607</div>
+            <div class="metric-badge-txt">Cohort Rows</div>
+          </div>
+          <div class="metric-badge">
+            <div class="metric-badge-num">20</div>
+            <div class="metric-badge-txt">Factors</div>
+          </div>
+          <div class="metric-badge">
+            <div class="metric-badge-num">67.24</div>
+            <div class="metric-badge-txt">Mean Score</div>
+          </div>
+          <div class="metric-badge">
+            <div class="metric-badge-num">O(1)</div>
+            <div class="metric-badge-txt">Client Heap</div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- 2. FOUR-PHASE RESEARCH WORKFLOW -->
+    <section class="workflow-strip">
+      <div class="workflow-lead">Pipeline Workflow</div>
+
+      <div class="wf-step">
+        <div class="wf-num">1</div>
+        <div class="wf-info">
+          <span class="wf-title">Unit 1: DWH &amp; ETL</span>
+          <span class="wf-desc">PostgreSQL Ingestion</span>
+        </div>
+      </div>
+
+      <span class="wf-arrow">&rarr;</span>
+
+      <div class="wf-step">
+        <div class="wf-num">2</div>
+        <div class="wf-info">
+          <span class="wf-title">Unit 2: OLAP Cube</span>
+          <span class="wf-desc">Slice, Dice, Pivot, Drill</span>
+        </div>
+      </div>
+
+      <span class="wf-arrow">&rarr;</span>
+
+      <div class="wf-step">
+        <div class="wf-num">3</div>
+        <div class="wf-info">
+          <span class="wf-title">Unit 3: Wrangling</span>
+          <span class="wf-desc">Z-Test, T-Test, &chi;&sup2; Invariance</span>
+        </div>
+      </div>
+
+      <span class="wf-arrow">&rarr;</span>
+
+      <div class="wf-step">
+        <div class="wf-num">4</div>
+        <div class="wf-info">
+          <span class="wf-title">Unit 4: Modeling</span>
+          <span class="wf-desc">Multiple OLS &amp; ROC Curve</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. FOUR CORE CURRICULUM MODULES (FILLING SPACE) -->
+    <main class="modules-grid">
+
+      <!-- ================= MODULE I (UNIT 1) ================= -->
+      <section class="research-card">
+        <div class="card-banner">
+          <div class="card-banner-left">
+            <span class="pill-unit">UNIT 1</span>
+            <span class="card-heading">Data Warehouse &amp; Ingestion Architecture</span>
+          </div>
+          <span class="card-focus">ETL &bull; Schema &bull; Pushdown</span>
+        </div>
+
+        <div class="card-content">
+          <div class="ingest-diagram-box">
+            <div class="diagram-title">
+              <span>PostgreSQL 18 Relational Data Warehouse Pipeline</span>
+              <span style="color:var(--primary); font-family:monospace;">O(1) Client Memory</span>
+            </div>
+            <!-- Clean SVG Pipeline Diagram -->
+            <svg viewBox="0 0 430 48" width="100%" height="48">
+              <rect x="2" y="4" width="88" height="38" rx="4" fill="#F8FAFC" stroke="#94A3B8" stroke-width="1.2"/>
+              <text x="46" y="20" font-size="9" font-weight="800" fill="#0F172A" text-anchor="middle">Student CSV</text>
+              <text x="46" y="33" font-size="8" fill="#64748B" text-anchor="middle">6,607 Raw Rows</text>
+
+              <path d="M 94 23 L 114 23" stroke="#EA580C" stroke-width="2"/>
+              <text x="104" y="18" font-size="7.5" fill="#C2410C" text-anchor="middle">Extract</text>
+
+              <rect x="118" y="4" width="102" height="38" rx="4" fill="#FFEDD5" stroke="#FDBA74" stroke-width="1.2"/>
+              <text x="169" y="20" font-size="9" font-weight="800" fill="#9A3412" text-anchor="middle">ETL Engine</text>
+              <text x="169" y="33" font-size="7.5" fill="#C2410C" text-anchor="middle">Type &amp; Null Cleaning</text>
+
+              <path d="M 224 23 L 244 23" stroke="#EA580C" stroke-width="2"/>
+              <text x="234" y="18" font-size="7.5" fill="#C2410C" text-anchor="middle">Load</text>
+
+              <rect x="248" y="4" width="98" height="38" rx="4" fill="#0F172A" stroke="#334155" stroke-width="1.2"/>
+              <text x="297" y="20" font-size="9" font-weight="800" fill="#FFFFFF" text-anchor="middle">PostgreSQL 18</text>
+              <text x="297" y="33" font-size="7.5" fill="#FDBA74" text-anchor="middle">students Table (3NF)</text>
+
+              <path d="M 350 23 L 370 23" stroke="#EA580C" stroke-width="2"/>
+              <text x="360" y="18" font-size="7.5" fill="#C2410C" text-anchor="middle">Push</text>
+
+              <rect x="374" y="4" width="54" height="38" rx="4" fill="#FFF7ED" stroke="#C2410C" stroke-width="1.2"/>
+              <text x="401" y="20" font-size="9" font-weight="800" fill="#C2410C" text-anchor="middle">OLAP</text>
+              <text x="401" y="33" font-size="7.5" fill="#475569" text-anchor="middle">Analytics</text>
+            </svg>
+          </div>
+
+          <ul class="bullet-list">
+            <li><strong>Relational Warehouse Design:</strong> Normalized 20-attribute schema enforcing constraints (Attendance &isin; [0, 100]%, Sleep &isin; [0, 24]h, Scores &isin; [0, 100]).</li>
+            <li><strong>Composite B-Tree Indexing:</strong> Dedicated B-Tree indexes on <code>(Exam_Score, Attendance)</code> optimize range filtering for fast analytics.</li>
+            <li><strong>Descriptive to Prescriptive Flow:</strong> Aggregated population metrics feed predictive modeling to target underperforming cohorts for intervention.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ================= MODULE II (UNIT 2) ================= -->
+      <section class="research-card">
+        <div class="card-banner">
+          <div class="card-banner-left">
+            <span class="pill-unit">UNIT 2</span>
+            <span class="card-heading">Multidimensional OLAP Cube Analytics</span>
+          </div>
+          <span class="card-focus">Slice &bull; Dice &bull; Pivot &bull; Drill-Down</span>
+        </div>
+
+        <div class="card-content">
+          <div class="olap-split">
+            <div class="olap-box">
+              <div class="olap-box-head">Core OLAP Operations</div>
+              <ul class="bullet-list">
+                <li><strong>Slice:</strong> Submatrix projection across 10 rows &times; 5 core study dimensions.</li>
+                <li><strong>Dice:</strong> Strict multi-condition filter (<code>Score &gt; 70</code> &amp; <code>Att &gt; 80%</code>) &rarr; Exactly <strong>969 matching students</strong>.</li>
+                <li><strong>Drill-down:</strong> Descending from campus-wide averages into individual factor distributions.</li>
+              </ul>
+            </div>
+
+            <div class="olap-box">
+              <div class="olap-box-head">2D Pivot Table (Mean Score)</div>
+              <table class="table-pivot">
+                <thead>
+                  <tr>
+                    <th>Internet</th>
+                    <th>Low</th>
+                    <th>Medium</th>
+                    <th>High</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>No</strong></td>
+                    <td>66.28</td>
+                    <td>66.54</td>
+                    <td>66.97</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Yes</strong></td>
+                    <td>66.80</td>
+                    <td>67.39</td>
+                    <td><strong>67.76</strong></td>
+                  </tr>
+                </tbody>
+              </table>
+              <div style="font-size:8.5px; color:var(--text-soft); margin-top:3px;">
+                Cross-tabulation: Internet Access vs Motivation
+              </div>
+            </div>
+          </div>
+
+          <ul class="bullet-list">
+            <li><strong>OLTP vs OLAP Architecture:</strong> Row-oriented OLTP handles ACID transactions; OLAP aggregates large column-sets via in-database SQL execution.</li>
+            <li><strong>Database Pushdown Efficiency:</strong> SQL <code>GROUP BY ROLLUP</code> and <code>CUBE</code> execute directly inside the engine, removing client network latency.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ================= MODULE III (UNIT 3) ================= -->
+      <section class="research-card">
+        <div class="card-banner">
+          <div class="card-banner-left">
+            <span class="pill-unit">UNIT 3</span>
+            <span class="card-heading">Data Wrangling &amp; Inferential Hypothesis Testing</span>
+          </div>
+          <span class="card-focus">Z-Test &bull; T-Test &bull; &chi;&sup2; Test &bull; Imputation</span>
+        </div>
+
+        <div class="card-content">
+          <ul class="bullet-list">
+            <li><strong>Audited Imputation:</strong> Cleaned Teacher Quality (1.18% nulls), Parental Education (1.36%), and Distance (1.01%) via mode and median imputation.</li>
+            <li><strong>Hypothesis Framework:</strong> Testing cohort performance against benchmark &mu;₀ = 65.00 with significance &alpha; = 0.05.</li>
+          </ul>
+
+          <div class="tests-dual-card">
+            <!-- One-Sample Z-Test -->
+            <div class="test-subcard">
+              <div class="test-subcard-head">
+                <span>1. One-Sample Z-Test</span>
+                <span style="color:var(--text-soft);">&sigma; = 10.0</span>
+              </div>
+              <div class="formula-display">Z = (x̄ &minus; &mu;₀)/(&sigma;/&radic;N) = +18.1722</div>
+              <div class="decision-badge-reject">p = 0.0000 &rarr; REJECT H₀</div>
+              <div style="font-size:8.5px; color:var(--text-soft); text-align:center;">Score significantly exceeds 65.0</div>
+            </div>
+
+            <!-- One-Sample T-Test -->
+            <div class="test-subcard">
+              <div class="test-subcard-head">
+                <span>2. One-Sample T-Test</span>
+                <span style="color:var(--text-soft);">df = 6,606</span>
+              </div>
+              <div class="formula-display">t = (x̄ &minus; &mu;₀)/(s/&radic;N) = +46.7097</div>
+              <div class="decision-badge-reject">p &lt; 0.0001 &rarr; REJECT H₀</div>
+              <div style="font-size:8.5px; color:var(--text-soft); text-align:center;">Confirmed with sample variance</div>
+            </div>
+          </div>
+
+          <div style="background:#FFFDFB; border:1.5px solid var(--border-accent); border-radius:6px; padding:4px 8px; display:flex; justify-content:space-between; align-items:center;">
+            <div style="font-size:9.5px;">
+              <strong>3. &chi;&sup2; Test of Independence:</strong> Internet Access vs Motivation (&chi;&sup2; = 2.7338, df = 2, p = 0.2549)
+            </div>
+            <div class="decision-badge-accept">FAIL TO REJECT H₀ (Independent)</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= MODULE IV (UNIT 4) ================= -->
+      <section class="research-card">
+        <div class="card-banner">
+          <div class="card-banner-left">
+            <span class="pill-unit">UNIT 4</span>
+            <span class="card-heading">Econometric Regression &amp; Predictive Analytics</span>
+          </div>
+          <span class="card-focus">OLS &bull; Multiple Regression &bull; ROC-AUC</span>
+        </div>
+
+        <div class="card-content">
+          <div class="regression-equation-strip">
+            Fitted Model: Score = 38.42 + 0.178(Attendance) + 0.285(Hours) + 0.042(Previous) + 0.461(Tutoring)
+          </div>
+
+          <div class="ml-split">
+            <!-- Correlation Hierarchy Bar Chart -->
+            <div class="ml-panel">
+              <div style="font-size:9.5px; font-weight:800; color:var(--primary-dark); margin-bottom:3px;">Pearson Correlation (r with Exam Score)</div>
+              <!-- Clean Scaled SVG Bar Chart -->
+              <svg viewBox="0 0 200 52" width="100%" height="52">
+                <text x="0" y="11" font-size="8.5" font-weight="700" fill="#0F172A">Attendance</text>
+                <rect x="68" y="3" width="95" height="10" rx="2.5" fill="#C2410C"/>
+                <text x="168" y="11" font-size="8" font-family="monospace" font-weight="800" fill="#C2410C">+0.581</text>
+
+                <text x="0" y="27" font-size="8.5" font-weight="700" fill="#0F172A">Hours Studied</text>
+                <rect x="68" y="19" width="73" height="10" rx="2.5" fill="#EA580C"/>
+                <text x="146" y="27" font-size="8" font-family="monospace" font-weight="800" fill="#EA580C">+0.446</text>
+
+                <text x="0" y="43" font-size="8.5" font-weight="700" fill="#0F172A">Prev Scores</text>
+                <rect x="68" y="35" width="29" height="10" rx="2.5" fill="#FB923C"/>
+                <text x="102" y="43" font-size="8" font-family="monospace" font-weight="800" fill="#C2410C">+0.175</text>
+              </svg>
+            </div>
+
+            <!-- Model Diagnostic Summary -->
+            <div class="ml-panel">
+              <div style="font-size:9.5px; font-weight:800; color:var(--primary-dark);">Diagnostic Validation</div>
+              <div style="display:flex; justify-content:space-around; text-align:center; margin:3px 0;">
+                <div>
+                  <div style="font-size:14px; font-weight:900; color:var(--primary); font-family:monospace;">0.738</div>
+                  <div style="font-size:7.5px; color:var(--text-soft); font-weight:700;">R² FIT SCORE</div>
+                </div>
+                <div>
+                  <div style="font-size:14px; font-weight:900; color:var(--green); font-family:monospace;">0.912</div>
+                  <div style="font-size:7.5px; color:var(--text-soft); font-weight:700;">ROC-AUC</div>
+                </div>
+                <div>
+                  <div style="font-size:14px; font-weight:900; color:var(--primary-dark); font-family:monospace;">84.2%</div>
+                  <div style="font-size:7.5px; color:var(--text-soft); font-weight:700;">ACCURACY</div>
+                </div>
+              </div>
+              <div style="font-size:8.5px; color:var(--text-muted); line-height:1.2;">
+                Regularized with Ridge (L2 penalty) to prevent collinearity and over-fitting.
+              </div>
+            </div>
+          </div>
+
+          <div style="font-size:9.5px; color:var(--text-muted);">
+            <strong>Key Econometric Finding:</strong> Attendance and study hours collectively account for &gt;70% of exam outcome variance. Sleep duration (r = &minus;0.017) displays zero linear predictive value.
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- 4. COMPARATIVE BENCHMARK & SYSTEM IMPACT -->
+    <section class="benchmark-section">
+      <div class="bench-card">
+        <span class="bench-card-title">Baseline Naive Pipeline</span>
+        <div style="color:var(--text-muted); line-height:1.25;">
+          &bull; Ephemeral Colab environment<br>
+          &bull; 2&times; redundant CSV disk parsing<br>
+          &bull; O(N) client heap overhead (4.94 MB)
+        </div>
+      </div>
+
+      <div class="bench-card">
+        <span class="bench-card-title">Optimized DWH Pipeline</span>
+        <div style="color:var(--text-muted); line-height:1.25;">
+          &bull; PostgreSQL 18 with B-Tree indexes<br>
+          &bull; In-database closed-form pushdown<br>
+          &bull; <strong>O(1) constant client memory</strong>
+        </div>
+      </div>
+
+      <div class="callout-amber-box">
+        <strong>Benchmarked Speedup:</strong> Single-pass vectorized pushdown achieves <strong>3.2&times; lower execution latency</strong> with 100% mathematical invariance.
+      </div>
+    </section>
+
+    <!-- 5. FOOTER BAR -->
+    <footer class="poster-footer">
+      <div>Department of Computer Science &amp; IT</div>
+      <div class="footer-highlight">Authors: Chinmay Ghag (202401080073) &emsp;&bull;&emsp; Kunal Birari (202401080049)</div>
+      <div>Academic Capstone 2025 &ndash; 2026</div>
+    </footer>
+
+  </div>
+
+</body>
+</html>
