@@ -80,12 +80,24 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
 .\.venv\Scripts\Activate.ps1
 ```
 
-### 1. Run Complete Workflow in Terminal
+### 1. Launch the Clean Web Dashboard (Recommended for Institution / College)
+```powershell
+streamlit run dashboard.py
+```
+This launches the modern, clean academic dashboard in your browser:
+- **Executive Overview**: High-level KPIs, grade distributions, and factor correlations.
+- **Cohort Analysis**: Socioeconomic & institutional factor breakdowns with boxplots.
+- **Multidimensional OLAP**: Interactive Slicing, Dicing, and 2D Pivot Heatmap cross-tabs.
+- **Hypothesis Testing**: Interactive Z-Test, T-Test, and Chi-Square independence evaluation.
+- **Predictor & Advisory**: AI marks simulation, pass/fail probability, and personalized intervention plans.
+- **Student Records (CRUD)**: Search, add, and edit student records directly in PostgreSQL.
+
+### 2. Run Complete Workflow in Terminal
 ```powershell
 python app.py all
 ```
 
-### 2. Run Individual Modules
+### 3. Run Individual Modules
 ```powershell
 # Run Exploratory Data Analysis (EDA)
 python app.py eda
