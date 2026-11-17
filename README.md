@@ -72,27 +72,28 @@ This project addresses five essential Data Science and Database Analytics pillar
 
 ---
 
-## 🚀 How to Run in VS Code / PowerShell
+## 🚀 How to Run the Next.js Web App (Recommended)
 
-Ensure your virtual environment is active:
+The project includes a clean, institution-grade **Next.js 14** web application located in `frontend/` powered directly by PostgreSQL 18 and Tailwind CSS:
+
 ```powershell
-Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
-.\.venv\Scripts\Activate.ps1
+cd frontend
+npm install
+npm run dev
 ```
+Open **[http://localhost:3000](http://localhost:3000)** in your browser to access:
+- **📊 Executive Overview**: Real-time institutional KPIs, grade distributions, factor rankings, and school type breakdowns.
+- **🧊 Multidimensional OLAP Cube**: Interactive Slicing, Dicing (multi-constraint filtering), and 2D Pivot Table cross-tabulations.
+- **📐 Hypothesis Testing Suite**: Parametric One-Sample Z-Test, T-Test, and Chi-Square independence tests.
+- **🎯 Mark Predictor & Advisory**: AI mark simulation with personalized academic counseling intervention plans.
+- **👥 Student Directory & Records (CRUD)**: Searchable student records with Add/Edit modals linked to PostgreSQL.
+- **⚙️ Data Warehouse Architecture**: PostgreSQL 18 connection diagnostics and query pushdown benchmarks.
 
-### 1. Launch the Clean Web Dashboard (Recommended for Institution / College)
-```powershell
-streamlit run dashboard.py
-```
-This launches the modern, clean academic dashboard in your browser:
-- **Executive Overview**: High-level KPIs, grade distributions, and factor correlations.
-- **Cohort Analysis**: Socioeconomic & institutional factor breakdowns with boxplots.
-- **Multidimensional OLAP**: Interactive Slicing, Dicing, and 2D Pivot Heatmap cross-tabs.
-- **Hypothesis Testing**: Interactive Z-Test, T-Test, and Chi-Square independence evaluation.
-- **Predictor & Advisory**: AI marks simulation, pass/fail probability, and personalized intervention plans.
-- **Student Records (CRUD)**: Search, add, and edit student records directly in PostgreSQL.
+---
 
-### 2. Run Complete Workflow in Terminal
+## 🐍 Alternative Terminal & Python Pipelines
+
+### 1. Run Complete Workflow in Terminal
 ```powershell
 python app.py all
 ```

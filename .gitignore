@@ -31,3 +31,11 @@ desktop.ini
 
 # Output / logs
 *.log
+
+# Frontend Next.js dependencies and build
+node_modules/
+.next/
+frontend/.next/
+frontend/node_modules/
+frontend/.env*.local
+
