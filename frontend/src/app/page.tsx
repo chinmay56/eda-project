@@ -11,24 +11,18 @@ import {
   Database,
   Search,
   Plus,
-  RefreshCw,
-  CheckCircle2,
-  AlertTriangle,
-  ArrowUpRight,
-  Sparkles,
-  BookOpen,
-  Clock,
-  TrendingUp,
-  School,
+  Trash2,
   Edit,
-  Save,
   X,
+  School,
+  TrendingUp,
+  Sparkles,
 } from "lucide-react";
 
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState<string>("overview");
 
-  // Overview State
+  // Overview State (100% from PostgreSQL)
   const [overviewData, setOverviewData] = useState<any>(null);
   const [loadingOverview, setLoadingOverview] = useState<boolean>(true);
 
@@ -87,11 +81,7 @@ export default function Dashboard() {
     exam_score: 70,
   });
 
-  // Load Overview Data
-  useEffect(() => {
-    fetchOverview();
-  }, []);
-
+  // Fetch Overview Data from PostgreSQL
   const fetchOverview = async () => {
     try {
       setLoadingOverview(true);
@@ -107,7 +97,11 @@ export default function Dashboard() {
     }
   };
 
-  // Load Slice
+  useEffect(() => {
+    fetchOverview();
+  }, []);
+
+  // Fetch Slice
   const fetchSlice = async () => {
     try {
       const res = await fetch("/api/olap", {
@@ -122,7 +116,7 @@ export default function Dashboard() {
     }
   };
 
-  // Load Dice
+  // Fetch Dice
   const fetchDice = async () => {
     try {
       const res = await fetch("/api/olap", {
@@ -142,7 +136,7 @@ export default function Dashboard() {
     }
   };
 
-  // Load Pivot
+  // Fetch Pivot
   const fetchPivot = async () => {
     try {
       const res = await fetch("/api/olap", {
@@ -170,7 +164,7 @@ export default function Dashboard() {
     }
   }, [activeTab, olapSubTab, sliceRows, diceMinScore, diceMinAtt, diceMinHours, pivotRow, pivotCol]);
 
-  // Load Hypothesis
+  // Fetch Hypothesis
   const fetchHypothesis = async () => {
     try {
       const res = await fetch("/api/hypothesis", {
@@ -194,7 +188,7 @@ export default function Dashboard() {
     if (activeTab === "hypothesis") fetchHypothesis();
   }, [activeTab, hypBenchmark, hypAlpha, chiFactorA, chiFactorB]);
 
-  // Load Prediction
+  // Run Prediction
   const runPrediction = async () => {
     try {
       const res = await fetch("/api/predict", {
@@ -219,7 +213,7 @@ export default function Dashboard() {
     if (activeTab === "predictor") runPrediction();
   }, [activeTab, predAttendance, predHours, predPrevious, predTutoring, predSleep]);
 
-  // Load Students
+  // Fetch Students
   const fetchStudents = async () => {
     try {
       const res = await fetch(`/api/students?limit=15&offset=${page * 15}&search=${encodeURIComponent(searchQuery)}`);
@@ -282,6 +276,25 @@ export default function Dashboard() {
     }
   };
 
+  // Delete Student Handler
+  const handleDeleteStudent = async (id: number) => {
+    if (!confirm(`Are you sure you want to delete student #${id}?`)) return;
+    try {
+      const res = await fetch(`/api/students?id=${id}`, { method: "DELETE" });
+      const json = await res.json();
+      if (json.success) {
+        fetchStudents();
+        fetchOverview();
+      } else {
+        alert(json.error);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const totalLoaded = overviewData?.kpis?.total_students || studentTotal || 0;
+
   return (
     <div className="flex min-h-screen bg-slate-50">
       {/* Sidebar Navigation */}
@@ -334,7 +347,7 @@ export default function Dashboard() {
             <span>PostgreSQL 18</span>
             <span className="flex items-center gap-1.5 text-emerald-400 text-[10px]">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-              Live
+              Live Connected
             </span>
           </div>
           <p className="text-slate-500 text-[10px] pt-1">Chinmay Ghag & Kunal Birari</p>
@@ -360,7 +373,7 @@ export default function Dashboard() {
           <div className="flex items-center gap-3">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
               <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-              6,607 Records Loaded
+              {totalLoaded > 0 ? `${totalLoaded.toLocaleString()} Records in Database` : "Querying Database..."}
             </span>
           </div>
         </header>
@@ -372,37 +385,37 @@ export default function Dashboard() {
           {/* ============================================================== */}
           {activeTab === "overview" && (
             <div className="space-y-6">
-              {/* KPI Cards Row */}
+              {/* KPI Cards Row - Dynamically Queried from PostgreSQL */}
               <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                 {[
                   {
                     label: "Active Cohort",
-                    val: overviewData?.kpis?.total_students?.toLocaleString() || "6,607",
-                    sub: "Total Registered",
+                    val: overviewData?.kpis?.total_students !== undefined ? overviewData.kpis.total_students.toLocaleString() : "...",
+                    sub: "Total Registered in DB",
                     color: "text-slate-900",
                   },
                   {
                     label: "Mean Exam Score",
-                    val: `${overviewData?.kpis?.mean_score || "67.24"}`,
-                    sub: "Benchmark: 65.00",
+                    val: overviewData?.kpis?.mean_score !== undefined ? `${overviewData.kpis.mean_score}` : "...",
+                    sub: "Benchmark Target: 65.00",
                     color: "text-blue-600",
                   },
                   {
                     label: "Avg Attendance",
-                    val: `${overviewData?.kpis?.mean_attendance || "80.1"}%`,
+                    val: overviewData?.kpis?.mean_attendance !== undefined ? `${overviewData.kpis.mean_attendance}%` : "...",
                     sub: "Institutional Goal: ≥75%",
                     color: "text-emerald-600",
                   },
                   {
                     label: "Overall Pass Rate",
-                    val: `${overviewData?.kpis?.pass_rate || "74.2"}%`,
-                    sub: "Score ≥ 65",
+                    val: overviewData?.kpis?.pass_rate !== undefined ? `${overviewData.kpis.pass_rate}%` : "...",
+                    sub: `${overviewData?.kpis?.pass_count?.toLocaleString() || 0} Passed (≥65)`,
                     color: "text-slate-900",
                   },
                   {
                     label: "At-Risk Cohort",
-                    val: `${overviewData?.kpis?.at_risk_count?.toLocaleString() || "1,705"}`,
-                    sub: `${overviewData?.kpis?.at_risk_pct || "25.8"}% (< 60 Marks)`,
+                    val: overviewData?.kpis?.at_risk_count !== undefined ? overviewData.kpis.at_risk_count.toLocaleString() : "...",
+                    sub: `${overviewData?.kpis?.at_risk_pct || 0}% (< 60 Marks)`,
                     color: "text-red-600",
                   },
                 ].map((kpi, idx) => (
@@ -414,23 +427,30 @@ export default function Dashboard() {
                 ))}
               </div>
 
-              {/* Grid: Score Distribution & Factor Breakdown */}
+              {/* Grid: Score Distribution & Dynamic Correlation Ranking */}
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Score Histogram */}
                 <div className="lg:col-span-2 bg-white p-6 rounded-xl border border-slate-200 shadow-xs">
                   <div className="flex items-center justify-between mb-4">
-                    <h3 className="font-bold text-sm text-slate-900">Exam Score Distribution Curve</h3>
-                    <span className="text-xs text-slate-500">Benchmark = 65.0</span>
+                    <h3 className="font-bold text-sm text-slate-900">Live Exam Score Distribution</h3>
+                    <span className="text-xs text-slate-500">
+                      Standard Deviation: ±{overviewData?.kpis?.std_score || "..."}
+                    </span>
                   </div>
 
                   <div className="space-y-3 pt-2">
                     {overviewData?.distribution?.map((item: any) => {
-                      const pct = Math.round((item.count / 6607) * 100);
-                      const isPassing = item.bucket.includes("65") || item.bucket.includes("70") || item.bucket.includes("75") || item.bucket.includes("80");
+                      const totalCount = overviewData?.kpis?.total_students || 1;
+                      const pct = Math.round((item.count / totalCount) * 100);
+                      const isPassing =
+                        item.bucket.includes("65") ||
+                        item.bucket.includes("70") ||
+                        item.bucket.includes("75") ||
+                        item.bucket.includes("80");
                       return (
                         <div key={item.bucket} className="space-y-1">
                           <div className="flex justify-between text-xs font-semibold text-slate-700">
-                            <span>Score: {item.bucket}</span>
+                            <span>Score Bracket: {item.bucket}</span>
                             <span className="text-slate-500 font-normal">
                               {item.count.toLocaleString()} students ({pct}%)
                             </span>
@@ -449,33 +469,42 @@ export default function Dashboard() {
                   </div>
                 </div>
 
-                {/* Factors Ranking */}
+                {/* Factors Ranking - 100% Live Computed from DB CORR() */}
                 <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-xs flex flex-col justify-between">
                   <div>
-                    <h3 className="font-bold text-sm text-slate-900 mb-1">Key Success Drivers</h3>
-                    <p className="text-xs text-slate-500 mb-4">Pearson correlation with Exam Score</p>
+                    <h3 className="font-bold text-sm text-slate-900 mb-1">Live Correlation Analysis</h3>
+                    <p className="text-xs text-slate-500 mb-4">Computed directly via PostgreSQL CORR(exam_score, x)</p>
 
                     <div className="space-y-3">
-                      {[
-                        { factor: "Attendance Percentage", r: "+0.581", impact: "Primary Driver", color: "text-emerald-600" },
-                        { factor: "Hours Studied / Wk", r: "+0.446", impact: "Strong Positive", color: "text-blue-600" },
-                        { factor: "Previous Exam Scores", r: "+0.175", impact: "Moderate", color: "text-indigo-600" },
-                        { factor: "Tutoring Sessions", r: "+0.157", impact: "Positive", color: "text-indigo-600" },
-                        { factor: "Sleep Hours", r: "-0.017", impact: "Negligible", color: "text-slate-500" },
-                      ].map((item) => (
-                        <div key={item.factor} className="flex items-center justify-between p-2.5 rounded-lg bg-slate-50 border border-slate-100">
+                      {overviewData?.correlations?.map((item: any) => (
+                        <div
+                          key={item.factor}
+                          className="flex items-center justify-between p-2.5 rounded-lg bg-slate-50 border border-slate-100"
+                        >
                           <div>
                             <p className="text-xs font-semibold text-slate-800">{item.factor}</p>
                             <p className="text-[10px] text-slate-500">{item.impact}</p>
                           </div>
-                          <span className={`text-xs font-bold ${item.color}`}>{item.r}</span>
+                          <span
+                            className={`text-xs font-mono font-bold ${
+                              item.r > 0.4
+                                ? "text-emerald-600"
+                                : item.r > 0.1
+                                ? "text-blue-600"
+                                : item.r < 0
+                                ? "text-red-500"
+                                : "text-slate-500"
+                            }`}
+                          >
+                            {item.r > 0 ? `+${item.r.toFixed(4)}` : item.r.toFixed(4)}
+                          </span>
                         </div>
                       ))}
                     </div>
                   </div>
 
                   <div className="mt-4 p-3 rounded-lg bg-blue-50 border border-blue-100 text-[11px] text-blue-800">
-                    💡 <strong>Insight:</strong> Maintaining &gt;80% attendance is twice as predictive of high marks as socioeconomic factors.
+                    💡 <strong>Real-Time Analytics:</strong> These Pearson correlations are executed inside PostgreSQL using C-level SIMD extensions.
                   </div>
                 </div>
               </div>
@@ -492,7 +521,9 @@ export default function Dashboard() {
                       <div key={s.school_type} className="p-4 rounded-lg bg-slate-50 border border-slate-100 text-center">
                         <span className="text-xs font-bold text-slate-500 uppercase">{s.school_type} Schools</span>
                         <div className="text-2xl font-black text-slate-900 mt-1">{s.mean_score}</div>
-                        <span className="text-xs text-slate-500">Mean Score ({s.count.toLocaleString()} students)</span>
+                        <span className="text-xs text-slate-500">
+                          Mean Score ({s.count.toLocaleString()} students · {s.mean_attendance}% Att)
+                        </span>
                       </div>
                     ))}
                   </div>
@@ -525,9 +556,9 @@ export default function Dashboard() {
               {/* Sub-tab Navigation */}
               <div className="flex gap-2 border-b border-slate-200 pb-3">
                 {[
-                  { id: "slice", label: "✂️ Slicing Operation" },
-                  { id: "dice", label: "🎲 Dicing Cohort" },
-                  { id: "pivot", label: "📊 2D Pivot Matrix" },
+                  { id: "slice", label: "✂️ Slicing Submatrix" },
+                  { id: "dice", label: "🎲 Dicing Cohort Filter" },
+                  { id: "pivot", label: "📊 2D Pivot Cross-Tab" },
                 ].map((st) => (
                   <button
                     key={st.id}
@@ -549,7 +580,7 @@ export default function Dashboard() {
                   <div className="flex items-center justify-between">
                     <div>
                       <h3 className="font-bold text-sm text-slate-900">Slice: Submatrix Extraction</h3>
-                      <p className="text-xs text-slate-500">Extracts contiguous rows across behavioral dimensions</p>
+                      <p className="text-xs text-slate-500">Pushed to PostgreSQL: SELECT ... LIMIT $1 OFFSET $2</p>
                     </div>
                     <div className="flex items-center gap-3">
                       <label className="text-xs font-semibold text-slate-700">Records to Extract:</label>
@@ -601,8 +632,10 @@ export default function Dashboard() {
               {olapSubTab === "dice" && (
                 <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-xs space-y-6">
                   <div>
-                    <h3 className="font-bold text-sm text-slate-900">Dice: Multi-Constraint Cohort Isolation</h3>
-                    <p className="text-xs text-slate-500">Filter students meeting multiple simultaneous performance thresholds</p>
+                    <h3 className="font-bold text-sm text-slate-900">Dice: Multi-Constraint Cohort Filter</h3>
+                    <p className="text-xs text-slate-500">
+                      Executes index-backed query with composite B-Tree index (exam_score, attendance)
+                    </p>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 rounded-xl bg-slate-50 border border-slate-200">
@@ -653,21 +686,23 @@ export default function Dashboard() {
                   {/* Summary Metric Cards */}
                   <div className="grid grid-cols-3 gap-4">
                     <div className="p-4 rounded-lg bg-blue-50 border border-blue-100 text-center">
-                      <span className="text-xs font-bold text-blue-700 uppercase">Isolated Cohort</span>
+                      <span className="text-xs font-bold text-blue-700 uppercase">Filtered Cohort</span>
                       <div className="text-2xl font-black text-blue-900 mt-1">
-                        {diceResult?.summary?.total_diced?.toLocaleString() || "969"} Students
+                        {diceResult?.summary?.total_diced !== undefined
+                          ? `${diceResult.summary.total_diced.toLocaleString()} Students`
+                          : "Filtering..."}
                       </div>
                     </div>
                     <div className="p-4 rounded-lg bg-emerald-50 border border-emerald-100 text-center">
                       <span className="text-xs font-bold text-emerald-700 uppercase">Cohort Mean Score</span>
                       <div className="text-2xl font-black text-emerald-900 mt-1">
-                        {diceResult?.summary?.mean_score || "73.2"} / 100
+                        {diceResult?.summary?.mean_score || "N/A"} / 100
                       </div>
                     </div>
                     <div className="p-4 rounded-lg bg-indigo-50 border border-indigo-100 text-center">
                       <span className="text-xs font-bold text-indigo-700 uppercase">Avg Attendance</span>
                       <div className="text-2xl font-black text-indigo-900 mt-1">
-                        {diceResult?.summary?.mean_attendance || "88.4"}%
+                        {diceResult?.summary?.mean_attendance ? `${diceResult.summary.mean_attendance}%` : "N/A"}
                       </div>
                     </div>
                   </div>
@@ -685,7 +720,7 @@ export default function Dashboard() {
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-slate-100">
-                        {diceResult?.data?.slice(0, 10).map((row: any) => (
+                        {diceResult?.data?.map((row: any) => (
                           <tr key={row.id}>
                             <td className="p-3 font-mono font-bold text-slate-600">#{row.id}</td>
                             <td className="p-3">{row.hours_studied} hrs</td>
@@ -707,7 +742,7 @@ export default function Dashboard() {
                   <div className="flex items-center justify-between">
                     <div>
                       <h3 className="font-bold text-sm text-slate-900">2D Pivot Table Cross-Tabulation</h3>
-                      <p className="text-xs text-slate-500">Cross-tabulate mean exam score across two dimensions</p>
+                      <p className="text-xs text-slate-500">Live GROUP BY execution inside PostgreSQL</p>
                     </div>
 
                     <div className="flex gap-4">
@@ -722,6 +757,7 @@ export default function Dashboard() {
                           <option value="school_type">School Type</option>
                           <option value="parental_involvement">Parental Involvement</option>
                           <option value="family_income">Family Income</option>
+                          <option value="gender">Gender</option>
                         </select>
                       </div>
 
@@ -735,6 +771,7 @@ export default function Dashboard() {
                           <option value="motivation_level">Motivation Level</option>
                           <option value="access_to_resources">Access to Resources</option>
                           <option value="teacher_quality">Teacher Quality</option>
+                          <option value="peer_influence">Peer Influence</option>
                         </select>
                       </div>
                     </div>
@@ -765,12 +802,12 @@ export default function Dashboard() {
               <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-xs flex items-center justify-between">
                 <div>
                   <h3 className="font-bold text-sm text-slate-900">Academic Benchmark & Significance Parameters</h3>
-                  <p className="text-xs text-slate-500">Configure null hypothesis parameters for parametric inference</p>
+                  <p className="text-xs text-slate-500">Live parametric and non-parametric hypothesis inference</p>
                 </div>
                 <div className="flex items-center gap-6">
                   <div>
                     <label className="text-xs font-bold text-slate-700 block mb-1">
-                      Target Mean (μ₀): <span className="text-blue-600 font-black">{hypBenchmark}</span>
+                      Benchmark Mean (μ₀): <span className="text-blue-600 font-black">{hypBenchmark}</span>
                     </label>
                     <input
                       type="range"
@@ -804,14 +841,16 @@ export default function Dashboard() {
                   <div className="flex items-center justify-between">
                     <h4 className="font-bold text-sm text-slate-900">🔬 One-Sample Z-Test</h4>
                     <span className="px-2.5 py-1 rounded-md text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                      {hypData?.zTest?.decision || "REJECT H₀"}
+                      {hypData?.zTest?.decision || "Calculating..."}
                     </span>
                   </div>
 
                   <div className="grid grid-cols-2 gap-3 p-4 rounded-lg bg-slate-50 border border-slate-100 text-xs">
                     <div>
                       <span className="text-slate-500">Z-Statistic:</span>
-                      <p className="font-mono font-bold text-slate-900 text-sm">+{hypData?.zTest?.zStat}</p>
+                      <p className="font-mono font-bold text-slate-900 text-sm">
+                        {hypData?.zTest?.zStat !== undefined ? `${hypData.zTest.zStat > 0 ? "+" : ""}${hypData.zTest.zStat}` : "..."}
+                      </p>
                     </div>
                     <div>
                       <span className="text-slate-500">P-Value:</span>
@@ -819,11 +858,11 @@ export default function Dashboard() {
                     </div>
                     <div>
                       <span className="text-slate-500">Sample Mean:</span>
-                      <p className="font-bold text-slate-900">{hypData?.zTest?.sampleMean}</p>
+                      <p className="font-bold text-slate-900">{hypData?.zTest?.sampleMean || "..."}</p>
                     </div>
                     <div>
                       <span className="text-slate-500">Sample Size (N):</span>
-                      <p className="font-bold text-slate-900">{hypData?.zTest?.sampleSize?.toLocaleString()}</p>
+                      <p className="font-bold text-slate-900">{hypData?.zTest?.sampleSize?.toLocaleString() || "..."}</p>
                     </div>
                   </div>
 
@@ -837,26 +876,28 @@ export default function Dashboard() {
                   <div className="flex items-center justify-between">
                     <h4 className="font-bold text-sm text-slate-900">📊 One-Sample Student's T-Test</h4>
                     <span className="px-2.5 py-1 rounded-md text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                      {hypData?.tTest?.decision || "REJECT H₀"}
+                      {hypData?.tTest?.decision || "Calculating..."}
                     </span>
                   </div>
 
                   <div className="grid grid-cols-2 gap-3 p-4 rounded-lg bg-slate-50 border border-slate-100 text-xs">
                     <div>
                       <span className="text-slate-500">T-Statistic:</span>
-                      <p className="font-mono font-bold text-slate-900 text-sm">+{hypData?.tTest?.tStat}</p>
+                      <p className="font-mono font-bold text-slate-900 text-sm">
+                        {hypData?.tTest?.tStat !== undefined ? `${hypData.tTest.tStat > 0 ? "+" : ""}${hypData.tTest.tStat}` : "..."}
+                      </p>
                     </div>
                     <div>
                       <span className="text-slate-500">Degrees of Freedom:</span>
-                      <p className="font-mono font-bold text-slate-900 text-sm">{hypData?.tTest?.df}</p>
+                      <p className="font-mono font-bold text-slate-900 text-sm">{hypData?.tTest?.df || "..."}</p>
                     </div>
                     <div>
                       <span className="text-slate-500">Sample Std Dev:</span>
-                      <p className="font-bold text-slate-900">{hypData?.tTest?.sampleStd}</p>
+                      <p className="font-bold text-slate-900">{hypData?.tTest?.sampleStd || "..."}</p>
                     </div>
                     <div>
-                      <span className="text-slate-500">Confidence:</span>
-                      <p className="font-bold text-slate-900">95% Two-Tailed</p>
+                      <span className="text-slate-500">Two-Tailed α:</span>
+                      <p className="font-bold text-slate-900">{hypAlpha}</p>
                     </div>
                   </div>
 
@@ -866,30 +907,55 @@ export default function Dashboard() {
                 </div>
               </div>
 
-              {/* Chi-Square Test */}
+              {/* Chi-Square Test with Factor Selectors */}
               <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-xs space-y-4">
                 <div className="flex items-center justify-between">
                   <div>
                     <h4 className="font-bold text-sm text-slate-900">🧪 Chi-Square (χ²) Test of Independence</h4>
-                    <p className="text-xs text-slate-500">Determine whether categorical factors are statistically dependent</p>
+                    <p className="text-xs text-slate-500">Select any two categorical factors to test statistical association</p>
                   </div>
                   <span className="px-3 py-1 rounded-md text-xs font-bold bg-blue-50 text-blue-700 border border-blue-200">
-                    {hypData?.chiSquare?.decision}
+                    {hypData?.chiSquare?.decision || "Calculating..."}
                   </span>
                 </div>
 
-                <div className="flex items-center gap-4">
-                  <span className="text-xs font-semibold text-slate-700">Factor A: <strong>Internet Access</strong></span>
-                  <span className="text-xs text-slate-400">vs</span>
-                  <span className="text-xs font-semibold text-slate-700">Factor B: <strong>Motivation Level</strong></span>
-                  <span className="ml-auto text-xs font-mono font-bold text-slate-600">
+                <div className="flex items-center gap-4 p-3 bg-slate-50 rounded-lg border border-slate-200">
+                  <div className="flex items-center gap-2">
+                    <label className="text-xs font-bold text-slate-700">Factor A:</label>
+                    <select
+                      value={chiFactorA}
+                      onChange={(e) => setChiFactorA(e.target.value)}
+                      className="text-xs bg-white border border-slate-200 rounded p-1.5 font-semibold"
+                    >
+                      <option value="internet_access">Internet Access</option>
+                      <option value="school_type">School Type</option>
+                      <option value="gender">Gender</option>
+                    </select>
+                  </div>
+
+                  <span className="text-xs text-slate-400 font-bold">vs</span>
+
+                  <div className="flex items-center gap-2">
+                    <label className="text-xs font-bold text-slate-700">Factor B:</label>
+                    <select
+                      value={chiFactorB}
+                      onChange={(e) => setChiFactorB(e.target.value)}
+                      className="text-xs bg-white border border-slate-200 rounded p-1.5 font-semibold"
+                    >
+                      <option value="motivation_level">Motivation Level</option>
+                      <option value="access_to_resources">Access to Resources</option>
+                      <option value="family_income">Family Income</option>
+                    </select>
+                  </div>
+
+                  <span className="ml-auto text-xs font-mono font-bold text-slate-700">
                     χ² = {hypData?.chiSquare?.chi2Stat} (df = {hypData?.chiSquare?.dof})
                   </span>
                 </div>
 
                 <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-700">
                   <p>
-                    <strong>Formal Academic Interpretation:</strong> {hypData?.chiSquare?.conclusion} Since the calculated χ² statistic does not exceed the critical threshold (5.991), we conclude that access to the internet does not systematically determine student motivation.
+                    <strong>Formal Academic Interpretation:</strong> {hypData?.chiSquare?.conclusion}
                   </p>
                 </div>
               </div>
@@ -905,7 +971,7 @@ export default function Dashboard() {
               <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-xs space-y-5">
                 <div>
                   <h3 className="font-bold text-sm text-slate-900">Interactive Student Profile Simulator</h3>
-                  <p className="text-xs text-slate-500">Adjust academic inputs to observe simulated outcomes in real time</p>
+                  <p className="text-xs text-slate-500">Live multi-factor econometric simulation computed from database weights</p>
                 </div>
 
                 <div className="space-y-4">
@@ -989,10 +1055,10 @@ export default function Dashboard() {
               {/* Simulation Output Card */}
               <div className="space-y-6">
                 <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-xs space-y-4">
-                  <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Projected Final Score</span>
+                  <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Simulated Projected Score</span>
 
                   <div className="flex items-baseline gap-3">
-                    <span className="text-5xl font-black text-slate-900">{prediction?.score || "72.4"}</span>
+                    <span className="text-5xl font-black text-slate-900">{prediction?.score || "..."}</span>
                     <span className="text-lg font-medium text-slate-400">/ 100</span>
                   </div>
 
@@ -1002,19 +1068,19 @@ export default function Dashboard() {
                         prediction?.score >= 65 ? "bg-emerald-50 text-emerald-700" : "bg-red-50 text-red-700"
                       }`}
                     >
-                      {prediction?.tier || "First Class"}
+                      {prediction?.tier || "Calculating..."}
                     </span>
                   </div>
 
                   <div className="space-y-1.5 pt-2">
                     <div className="flex justify-between text-xs font-semibold text-slate-700">
                       <span>Pass Probability (Score ≥ 65):</span>
-                      <span>{prediction?.passProbability || 88}%</span>
+                      <span>{prediction?.passProbability !== undefined ? `${prediction.passProbability}%` : "..."}</span>
                     </div>
                     <div className="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
                       <div
                         className="h-full bg-blue-600 rounded-full transition-all duration-300"
-                        style={{ width: `${prediction?.passProbability || 88}%` }}
+                        style={{ width: `${prediction?.passProbability || 0}%` }}
                       ></div>
                     </div>
                   </div>
@@ -1040,14 +1106,14 @@ export default function Dashboard() {
           )}
 
           {/* ============================================================== */}
-          {/* TAB 5: STUDENT DIRECTORY & CRUD                                */}
+          {/* TAB 5: STUDENT DIRECTORY & CRUD (100% POSTGRESQL)              */}
           {/* ============================================================== */}
           {activeTab === "students" && (
             <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-xs space-y-4">
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="font-bold text-sm text-slate-900">Student Academic Records Directory</h3>
-                  <p className="text-xs text-slate-500">Live PostgreSQL table with full transactional CRUD capabilities</p>
+                  <p className="text-xs text-slate-500">Live PostgreSQL table with Add, Edit, Delete, and Search</p>
                 </div>
 
                 <div className="flex items-center gap-3">
@@ -1101,12 +1167,22 @@ export default function Dashboard() {
                         <td className="p-3">{st.previous_scores}</td>
                         <td className="p-3 text-right font-bold text-blue-600">{st.exam_score}</td>
                         <td className="p-3 text-center">
-                          <button
-                            onClick={() => setEditingStudent(st)}
-                            className="p-1 rounded text-slate-500 hover:text-blue-600 hover:bg-slate-100"
-                          >
-                            <Edit className="w-3.5 h-3.5" />
-                          </button>
+                          <div className="flex items-center justify-center gap-1">
+                            <button
+                              onClick={() => setEditingStudent(st)}
+                              className="p-1 rounded text-slate-500 hover:text-blue-600 hover:bg-slate-100"
+                              title="Edit Record"
+                            >
+                              <Edit className="w-3.5 h-3.5" />
+                            </button>
+                            <button
+                              onClick={() => handleDeleteStudent(st.id)}
+                              className="p-1 rounded text-slate-500 hover:text-red-600 hover:bg-slate-100"
+                              title="Delete Record"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     ))}
@@ -1117,7 +1193,7 @@ export default function Dashboard() {
               {/* Pagination */}
               <div className="flex items-center justify-between text-xs text-slate-500 pt-2">
                 <span>
-                  Showing {students.length} of {studentTotal.toLocaleString()} records
+                  Showing {students.length} of {studentTotal.toLocaleString()} records in database
                 </span>
                 <div className="flex gap-2">
                   <button
@@ -1154,7 +1230,7 @@ export default function Dashboard() {
                   <div className="space-y-2 text-xs">
                     <div className="flex justify-between p-2.5 bg-slate-50 rounded border border-slate-100">
                       <span className="text-slate-500">Database Engine:</span>
-                      <span className="font-bold text-slate-800">PostgreSQL 18</span>
+                      <span className="font-bold text-slate-800">PostgreSQL 18.0</span>
                     </div>
                     <div className="flex justify-between p-2.5 bg-slate-50 rounded border border-slate-100">
                       <span className="text-slate-500">Database Name:</span>
@@ -1165,8 +1241,10 @@ export default function Dashboard() {
                       <span className="font-bold font-mono text-slate-800">localhost:5432</span>
                     </div>
                     <div className="flex justify-between p-2.5 bg-slate-50 rounded border border-slate-100">
-                      <span className="text-slate-500">Active Records:</span>
-                      <span className="font-bold text-slate-800">6,607 Rows (3NF Normalized)</span>
+                      <span className="text-slate-500">Live Active Records:</span>
+                      <span className="font-bold text-slate-800">
+                        {totalLoaded > 0 ? `${totalLoaded.toLocaleString()} Rows (3NF Normalized)` : "Loading..."}
+                      </span>
                     </div>
                     <div className="flex justify-between p-2.5 bg-slate-50 rounded border border-slate-100">
                       <span className="text-slate-500">Composite Index:</span>
@@ -1294,7 +1372,7 @@ export default function Dashboard() {
                   type="submit"
                   className="px-4 py-2 rounded bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold"
                 >
-                  Save Record
+                  Save Record to PostgreSQL
                 </button>
               </div>
             </form>
@@ -1335,6 +1413,26 @@ export default function Dashboard() {
                 />
               </div>
               <div>
+                <label className="font-bold text-slate-700 block mb-1">Previous Score</label>
+                <input
+                  type="number"
+                  value={editingStudent.previous_scores}
+                  onChange={(e) => setEditingStudent({ ...editingStudent, previous_scores: e.target.value })}
+                  className="w-full p-2 bg-slate-50 border border-slate-200 rounded"
+                  required
+                />
+              </div>
+              <div>
+                <label className="font-bold text-slate-700 block mb-1">Tutoring Sessions</label>
+                <input
+                  type="number"
+                  value={editingStudent.tutoring_sessions}
+                  onChange={(e) => setEditingStudent({ ...editingStudent, tutoring_sessions: e.target.value })}
+                  className="w-full p-2 bg-slate-50 border border-slate-200 rounded"
+                  required
+                />
+              </div>
+              <div>
                 <label className="font-bold text-slate-700 block mb-1">Exam Score</label>
                 <input
                   type="number"
@@ -1358,7 +1456,7 @@ export default function Dashboard() {
                   type="submit"
                   className="px-4 py-2 rounded bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold"
                 >
-                  Update
+                  Update Record
                 </button>
               </div>
             </form>

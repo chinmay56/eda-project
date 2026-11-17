@@ -125,3 +125,23 @@ export async function PUT(req: NextRequest) {
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
 }
+
+// DELETE: Delete student record
+export async function DELETE(req: NextRequest) {
+  try {
+    const { searchParams } = new URL(req.url);
+    const id = parseInt(searchParams.get("id") || "", 10);
+    if (!id) {
+      return NextResponse.json({ success: false, error: "Invalid student ID" }, { status: 400 });
+    }
+
+    const deleted = await queryDb("DELETE FROM students WHERE id = $1 RETURNING id;", [id]);
+    if (!deleted.length) {
+      return NextResponse.json({ success: false, error: `Student #${id} not found` }, { status: 404 });
+    }
+
+    return NextResponse.json({ success: true, message: `Student #${id} deleted successfully`, id });
+  } catch (error: any) {
+    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+  }
+}

@@ -3,7 +3,7 @@ import { queryDb } from "@/lib/db";
 
 export async function GET() {
   try {
-    // 1. Core KPIs
+    // 1. Core KPIs - 100% computed from PostgreSQL
     const kpiQuery = `
       SELECT 
         COUNT(*)::int AS total_students,
@@ -11,9 +11,9 @@ export async function GET() {
         ROUND(AVG(attendance)::numeric, 1) AS mean_attendance,
         ROUND(AVG(hours_studied)::numeric, 1) AS mean_hours,
         COUNT(CASE WHEN exam_score >= 65 THEN 1 END)::int AS pass_count,
-        ROUND((COUNT(CASE WHEN exam_score >= 65 THEN 1 END)::numeric / COUNT(*) * 100), 1) AS pass_rate,
+        ROUND((COUNT(CASE WHEN exam_score >= 65 THEN 1 END)::numeric / NULLIF(COUNT(*), 0) * 100), 1) AS pass_rate,
         COUNT(CASE WHEN exam_score < 60 THEN 1 END)::int AS at_risk_count,
-        ROUND((COUNT(CASE WHEN exam_score < 60 THEN 1 END)::numeric / COUNT(*) * 100), 1) AS at_risk_pct,
+        ROUND((COUNT(CASE WHEN exam_score < 60 THEN 1 END)::numeric / NULLIF(COUNT(*), 0) * 100), 1) AS at_risk_pct,
         ROUND(STDDEV_SAMP(exam_score)::numeric, 2) AS std_score,
         MIN(exam_score) AS min_score,
         MAX(exam_score) AS max_score
@@ -22,7 +22,7 @@ export async function GET() {
     const kpiRows = await queryDb(kpiQuery);
     const kpis = kpiRows[0];
 
-    // 2. Score Distribution (Histogram Buckets)
+    // 2. Score Distribution (Histogram Buckets) - live query
     const histQuery = `
       SELECT 
         bucket,
@@ -54,7 +54,28 @@ export async function GET() {
     `;
     const distribution = await queryDb(histQuery);
 
-    // 3. Performance by School Type
+    // 3. Live Pearson Correlations dynamically computed by PostgreSQL
+    const corrQuery = `
+      SELECT 
+        ROUND(CORR(exam_score, attendance)::numeric, 4) AS attendance,
+        ROUND(CORR(exam_score, hours_studied)::numeric, 4) AS hours_studied,
+        ROUND(CORR(exam_score, previous_scores)::numeric, 4) AS previous_scores,
+        ROUND(CORR(exam_score, tutoring_sessions)::numeric, 4) AS tutoring_sessions,
+        ROUND(CORR(exam_score, physical_activity)::numeric, 4) AS physical_activity,
+        ROUND(CORR(exam_score, sleep_hours)::numeric, 4) AS sleep_hours
+      FROM students;
+    `;
+    const corrRow = (await queryDb(corrQuery))[0];
+    const correlations = [
+      { factor: "Attendance Percentage", r: parseFloat(corrRow.attendance || 0), impact: "Primary Success Driver" },
+      { factor: "Hours Studied / Wk", r: parseFloat(corrRow.hours_studied || 0), impact: "Strong Positive Driver" },
+      { factor: "Previous Exam Scores", r: parseFloat(corrRow.previous_scores || 0), impact: "Moderate Correlation" },
+      { factor: "Tutoring Sessions", r: parseFloat(corrRow.tutoring_sessions || 0), impact: "Positive Correlation" },
+      { factor: "Physical Activity", r: parseFloat(corrRow.physical_activity || 0), impact: "Low Correlation" },
+      { factor: "Sleep Hours", r: parseFloat(corrRow.sleep_hours || 0), impact: "Neutral / Invariant" },
+    ].sort((a, b) => b.r - a.r);
+
+    // 4. Performance by School Type
     const schoolQuery = `
       SELECT 
         school_type,
@@ -67,7 +88,7 @@ export async function GET() {
     `;
     const bySchool = await queryDb(schoolQuery);
 
-    // 4. Performance by Motivation Level
+    // 5. Performance by Motivation Level
     const motivationQuery = `
       SELECT 
         motivation_level,
@@ -84,6 +105,7 @@ export async function GET() {
       data: {
         kpis,
         distribution,
+        correlations,
         bySchool,
         byMotivation,
       },
